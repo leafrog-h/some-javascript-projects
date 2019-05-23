@@ -183,6 +183,15 @@ function optimizeProcessing(values, process) {
         }
      }
 }
+// javascript algorithm challenge: two sum
+let sortedOutcome = (arr, summmedNum) => {
+    if (!(arr instanceof Array && typeof summmedNum === number)) return;
+    for (let [key, val] of Object.entries(arr)) {
+        let subtracted = summmedNum - val;
+       return arr.includes(subtracted)?  [key, arr.indexOf(subtracted)]: null;
+    }
+}
+
 
 // auto typewrite effect in the web page
 let typing = document.querySelector('.typewrite'),
