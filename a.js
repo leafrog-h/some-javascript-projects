@@ -8,71 +8,38 @@ const printNode = (el = {}) => {
     setQueue(queue);
 }
 
-// create a stopwatch option1
-class StopWatch {
-    constructor () {
-        this.canStart = true;
-        this.canStop = false;
-        this.startDate = 0;
-        this.stopDate = 0;
-        this.durtion = this.stopDate - this.startDate;
-    }
-    static start = () => {
-        if (!!this.canStart) {
-            this.canStart = !this.canStart;
-            this.canStop = !this.canStop;
-            this.startDate = new Date()
-        }
-        else new Error("can not start")
-        
 
-    }
-    static stop = () => {
-        if (!!canStop) {
-            this.canStart = !this.canStart;
-            this.canStop = !this.canStop;
-            this.stopDate = new Date();
-            this.durtion += this.stopDate - this.startDate;
-            
-
-        }
-        else throw new error("can not stop")
-
-    }
-    static reset = () => {
-        this.canStart = true;
-        this.canStop = false;
-        this.startDate = this.stopDate = 0;
-        this.durtion = 0;
-    }
-
-    
-}
-// create stopwatch option2
+// create a stopwatch 
 let sw = {
     flag: true,
     startDate: 0,
-    durtion: 0,
+    rawDuration: 0
+    durationInSeconds: 0,
     start = () => {
         if (this.flag) {
             this.flag = !flag;
             this.startDate = new Date();
+            this.rawDuration = this.startDate.now();
         }
         else throw new error;
     },
     stop = () => {
         if (!this.flag) {
             this.flag = !this.flag;
-            this.durtion += new Date() - this.startDate;
-
+            this.rawDuration = Date.now() - this.rawDuration;
+            this.durationInSeconds = (this.rawDuration / 1000).tofixed(2);
         }
         else throw new error;
     },
     reset = () => {
         this.flag = ture;
-        this.durtion = 0;
+        this.durationInSeconds = 0;
+        this.startDate = 0;
+        this.rawDuration = 0;
+        this.durationInSeconds = 0;
     }
 };
+Object.preventExtensions(sw);
 // javascript function reload:
 function createXhr() {
     if (typeof xmlHttpRequest !== "undefined") {
@@ -213,3 +180,97 @@ let typing = document.querySelector('.typewrite'),
     
 })();
 
+
+// get the vertical distance of the target element from viewport
+// Method 1: get vertical distance of the target ele from document, then subtract the document's scrolled distance
+// to get the ele's (top-border) distance from the viewport top 
+function getElementViewTop(element) {
+    let actualTop = element.offsetTop;
+    let current = element.offsetParent;
+    let elementScrollTop;
+  
+    while (current !== null) {
+      actualTop += current.offsetTop; // get distance of target ele from document top
+      current = current.offsetParent;
+    }
+  
+    if (document.compatMode == 'BackCompat') {
+      elementScrollTop = document.body.scrollTop;
+    } else {
+      elementScrollTop = document.documentElement.scrollTop;  
+    }
+  
+    return actualTop - elementScrollTop; // substract the scrolled distance
+  }
+  // method 2:
+  function getElementViewTop_2(ele, scrolledTop = 0) {
+      if (document.compatMode == 'BackCompat') {
+        scrolledTop = document.body.scrollTop;
+      } else {
+        scrolledTop = document.documentElement.scrollTop;
+      }
+    return ele.getBoundingClientRect().top + scrolledTop
+    
+  }
+  
+  function getElementViewLeft(element) {
+    let actualLeft = element.offsetLeft;
+    let current = element.offsetParent;
+    let elementScrollLeft;
+  
+    while (current !== null) {
+      actualLeft += current.offsetLeft;
+      current = current.offsetParent;
+    }
+  
+    if (document.compatMode == 'BackCompat') {
+      elementScrollLeft = document.body.scrollLeft;
+    } else {
+      elementScrollLeft = document.documentElement.scrollLeft;
+    }
+  
+    return actualLeft - elementScrollLeft;
+  }
+  
+  function getElementViewLeft_2(ele, scrolledLeft = 0) {
+    if (document.compatMode == 'BackCompat') {
+        scrolledLeft = document.body.scrollLeft;
+      } else {
+        scrolledLeft = document.documentElement.scrollLeft;
+      }
+    return ele.getBoundingClientRect().left + scrolledLeft
+  }
+
+
+// scroll to top of the viewport  
+const scrollToTop = () => {
+    if (window.getComputedStyle && window.getComputedStyle(document.body).scrollBehavior) {
+        scrollToTop = () => document.querySelector('body')
+            .scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+            });
+    } else {
+        if (!window.requestAnimationFrame) {
+            let startDate = 0;
+            scrollToTop = (timeout = null, delay = 0) => {
+                let scrolledTop = document.documentElement.scrollTop || document.body.scrollTop;
+                if (scrolledTop > 0) return (() = > {
+                    if (!timeout)
+                        timeout = setTimeout(() => {
+                        timeout = null
+                        window.scrollTo(0, scrolledTop - scrolledTop / 8)
+                    }, delay))();
+                    
+                }
+            }
+          }
+        }
+        scrollToTop = () => {
+            const scrolledTop = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrolledTop > 0) {
+                window.requestAnimationFrame(scrollToTop);
+                window.scrollTo(0, scrolledTop - scrolledTop / 8);
+            }
+        }
+}
